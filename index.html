@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Martineli — Consultor & Estrategista Patrimonial</title>
+<meta name="description" content="Gabriel Martineli. Consultor e empreendedor em Campinas-SP — estratégia patrimonial sem juros, à frente da Empreendendo Cedo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23E80207'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='13' font-weight='800' fill='white' text-anchor='middle'%3EGM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.19/dist/lenis.mjs" } }
+</script>
+<style>
+/* ============ Reset ============ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+img,video{display:block;max-width:100%}
+ul,ol{list-style:none}
+a{color:inherit;text-decoration:none;background:none}
+button{font:inherit;color:inherit;background:none;border:none;padding:0;appearance:none;cursor:pointer}
+input,textarea{font:inherit}
+
+/* ============ Tokens ============ */
+:root{
+  --background:#000000;
+  --foreground:#f5f5f7;
+  --surface:#111114;
+  --surface-2:#191a1e;
+  --muted:#8a8b93;
+  --line:rgba(245,245,247,0.1);
+  --line-strong:rgba(245,245,247,0.22);
+  --accent:#E80207;
+  --accent-2:#ff4d50;
+
+  --gutter:2.5rem;
+  --section:9rem;
+
+  --font-display:"Anton", sans-serif;
+  --font-sans:"Onest", sans-serif;
+
+  --fs-hero:28rem;   --lh-hero:0.78;
+  --fs-mega:12rem;   --lh-mega:0.86;
+  --fs-display:7.5rem; --lh-display:0.9;
+  --fs-h1:5rem;      --lh-h1:0.95;
+  --fs-h2:3.25rem;   --lh-h2:1;
+  --fs-h3:1.75rem;   --lh-h3:1.15;
+  --fs-lead:1.375rem; --lh-lead:1.45;
+  --fs-body:1.0625rem; --lh-body:1.6;
+  --fs-eyebrow:0.8125rem; --lh-eyebrow:1.2;
+}
+
+/* ============ Fundo escuro base ============ */
+html{ font-size:16px; background:var(--background); }
+body{
+  background:var(--background); color:var(--foreground);
+  font-family:var(--font-sans); -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility; overflow-x:hidden;
+}
+::selection{ background:var(--accent); color:var(--background); }
+
+/* ============ Canvas de fundo (poeira) ============ */
+#scene{ position:fixed; inset:0; width:100vw; height:100vh; z-index:0; pointer-events:none; }
+
+/* ============ Grade adaptativa (rem responsivo por vw) ============ */
+@media (max-width:1920px){ html{ font-size:0.833333vw; } }
+@media (max-width:1440px){ html{ font-size:1.111111vw; } }
+@media (max-width:1024px){ html{ font-size:1.5625vw;   } }
+@media (max-width:640px){
+  html{ font-size:4.444444vw; }
+  :root{ --gutter:16px; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
+
+/* ============ Eyebrow ============ */
+.eyebrow{ display:flex; align-items:center; gap:.75rem; font-size:var(--fs-eyebrow); line-height:var(--lh-eyebrow); font-weight:500; text-transform:uppercase; letter-spacing:.22em; color:var(--muted); }
+.eyebrow::before{ content:""; width:.5rem; height:.5rem; border-radius:9999px; background:var(--accent); flex:none; }
+
+/* ============ Reveal genérico (fade + slide) ============ */
+.reveal{ opacity:0; transform:translateY(24px); transition:opacity .56s cubic-bezier(.16,1,.3,1), transform .56s cubic-bezier(.16,1,.3,1); }
+.reveal.in-view{ opacity:1; transform:none; }
+
+/* ============ Reveal de título em linhas ============ */
+.line-mask{ overflow:hidden; display:block; padding-top:.16em; margin-top:-.16em; padding-bottom:.08em; margin-bottom:-.08em; }
+.line-inner{ display:block; transform:translateY(110%); opacity:0; transition:transform .85s cubic-bezier(.16,1,.3,1), opacity .85s cubic-bezier(.16,1,.3,1); }
+.heading-lines.in-view .line-inner{ transform:translateY(0); opacity:1; }
+
+/* ============ Preloader ============ */
+#preloader{
+  position:fixed; inset:0; z-index:100; background:var(--background);
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; gap:.75rem;
+  padding:var(--gutter);
+  transition:transform .65s cubic-bezier(.22,1,.36,1);
+}
+@media (min-width:640px){ #preloader{ flex-direction:row; align-items:flex-end; justify-content:space-between; gap:1rem; } }
+#preloader.wipe{ transform:translateY(-100%); }
+#preloader .pre-brand{ font-family:var(--font-display); font-size:var(--fs-h3); line-height:1; text-transform:uppercase; letter-spacing:-.01em; color:var(--foreground); transition:opacity .3s ease; }
+#preloader .pre-count{ font-family:var(--font-display); font-size:var(--fs-display); line-height:1; font-variant-numeric:tabular-nums; color:var(--foreground); transition:opacity .3s ease; }
+#preloader .pre-count .pct{ color:var(--accent); }
+#preloader.fade-out .pre-brand, #preloader.fade-out .pre-count{ opacity:0; }
+.reduced-motion #preloader{ display:none; }
+
+/* ============ Nav ============ */
+#site-nav{ position:fixed; inset-inline:0; top:0; z-index:50; pointer-events:none; }
+.nav-inner{ pointer-events:auto; display:flex; align-items:center; justify-content:space-between; padding:1.5rem var(--gutter); }
+.nav-logo{ display:flex; align-items:center; gap:.75rem; }
+.nav-logo .mono{ display:grid; place-items:center; width:2.5rem; height:2.5rem; border-radius:9999px; border:1px solid var(--line-strong); font-family:var(--font-sans); font-weight:600; letter-spacing:-.01em; font-size:.85rem; }
+.nav-logo .nm{ font-size:var(--fs-eyebrow); font-weight:500; text-transform:uppercase; letter-spacing:.22em; color:var(--muted); display:none; }
+@media (min-width:640px){ .nav-logo .nm{ display:inline; } }
+.nav-links{ display:none; align-items:center; gap:2.5rem; }
+@media (min-width:768px){ .nav-links{ display:flex; } }
+.nav-links a{ position:relative; font-size:var(--fs-eyebrow); font-weight:500; text-transform:uppercase; letter-spacing:.18em; color:var(--muted); padding-bottom:.3rem; transition:color .3s ease; }
+.nav-links a::after{ content:""; position:absolute; bottom:0; left:0; height:1px; width:0; background:var(--accent); transition:width .3s ease; }
+.nav-links a:hover{ color:var(--foreground); }
+.nav-links a:hover::after{ width:100%; }
+.nav-cta{ display:none; }
+@media (min-width:768px){
+  .nav-cta{ display:inline-flex; align-items:center; gap:.5rem; font-size:var(--fs-eyebrow); font-weight:600; text-transform:uppercase; letter-spacing:.14em; color:var(--background); background:var(--accent); padding:.7rem 1.2rem; border-radius:9999px; transition:transform .3s ease, box-shadow .3s ease; }
+  .nav-cta:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(232,2,7,.35); }
+}
+.burger{ display:flex; flex-direction:column; justify-content:center; gap:.375rem; width:2.5rem; height:2.5rem; }
+@media (min-width:768px){ .burger{ display:none; } }
+.burger .bar{ height:.125rem; width:1.5rem; background:var(--foreground); transition:transform .3s ease, opacity .3s ease; }
+.burger.open .bar:nth-child(1){ transform:translateY(.5rem) rotate(45deg); }
+.burger.open .bar:nth-child(2){ opacity:0; }
+.burger.open .bar:nth-child(3){ transform:translateY(-.5rem) rotate(-45deg); }
+
+#mobile-menu{
+  position:fixed; inset:0; z-index:49; background:var(--background);
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:.75rem;
+  padding-inline:var(--gutter); opacity:0; visibility:hidden; transition:opacity .45s ease, visibility .45s;
+}
+#mobile-menu.open{ opacity:1; visibility:visible; }
+#mobile-menu a{ font-family:var(--font-display); font-size:var(--fs-h2); line-height:1; text-transform:uppercase; letter-spacing:-.01em; color:var(--foreground); overflow:hidden; display:block; }
+#mobile-menu .m-inner{ display:inline-block; transform:translateY(48px); opacity:0; transition:transform .42s cubic-bezier(.16,1,.3,1), opacity .42s cubic-bezier(.16,1,.3,1); }
+#mobile-menu.open .m-inner{ transform:translateY(0); opacity:1; }
+
+/* ============ Hero ============ */
+#top{ position:relative; display:flex; flex-direction:column; min-height:100svh; overflow:hidden; }
+.hero-top{ position:relative; z-index:30; display:flex; flex-direction:column; gap:2rem; padding:7rem var(--gutter) 0; }
+@media (min-width:640px){ .hero-top{ flex-direction:row; align-items:flex-start; justify-content:space-between; padding-top:8rem; } }
+.hero-roles{ font-family:var(--font-display); font-size:var(--fs-h3); line-height:1.05; text-transform:uppercase; letter-spacing:-.01em; color:var(--foreground); }
+@media (min-width:640px){ .hero-roles{ font-size:var(--fs-h2); } }
+.hero-roles .role-mask{ overflow:hidden; display:block; padding-top:.16em; margin-top:-.16em; padding-bottom:.08em; margin-bottom:-.08em; }
+.hero-roles .role-inner{ display:block; transform:translateY(110%); opacity:0; transition:transform .76s cubic-bezier(.16,1,.3,1), opacity .76s cubic-bezier(.16,1,.3,1); }
+.hero-roles .role-mask.in-view .role-inner{ transform:translateY(0); opacity:1; }
+.hero-desc{ max-width:26rem; font-size:var(--fs-body); line-height:var(--lh-body); color:var(--muted); }
+@media (max-width:639px){ .hero-desc{ color:var(--foreground); text-shadow:0 0 3px rgba(0,0,0,.85), 0 1px 16px rgba(0,0,0,.95); } }
+@media (min-width:640px){ .hero-desc{ text-align:right; } }
+
+.hero-portrait-wrap{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); height:86vh; width:80vw; z-index:20; pointer-events:none; }
+@media (min-width:640px){ .hero-portrait-wrap{ width:48vw; } }
+@media (min-width:1024px){ .hero-portrait-wrap{ width:36vw; } }
+.hero-portrait-wrap .liquid-image{ width:100%; height:100%; pointer-events:auto; }
+.hero-portrait-wrap img{ object-position:center top; }
+
+.hero-gradient-base{ position:absolute; inset-inline:0; bottom:0; z-index:20; height:26vh; background:linear-gradient(to bottom, transparent, var(--background)); pointer-events:none; }
+
+.hero-name{
+  position:absolute; inset-inline:0; bottom:0; transform:translateY(6%);
+  display:flex; flex-direction:column; align-items:center; z-index:10;
+  font-family:var(--font-display); text-transform:uppercase; letter-spacing:-.01em; color:var(--accent);
+  pointer-events:none;
+}
+.hero-name .name-line{ display:block; white-space:nowrap; line-height:.82; }
+.hero-name .name-line--1{ font-size:31vw; }
+.hero-name .name-line--2{ font-size:24.5vw; }
+.hero-name .letter-mask{ display:inline-block; overflow:hidden; vertical-align:top; }
+.hero-name .letter{ display:inline-block; transform:translateY(100%); opacity:0; transition:transform .9s cubic-bezier(.16,1,.3,1), opacity .9s cubic-bezier(.16,1,.3,1); }
+.hero-name .name-line.in-view .letter{ transform:translateY(0); opacity:1; }
+
+.scroll-cue{
+  position:absolute; bottom:2rem; left:var(--gutter); z-index:30;
+  display:flex; align-items:center; gap:.75rem; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.22em; color:var(--muted);
+  opacity:0; transition:opacity .6s ease;
+}
+.scroll-cue.in-view{ opacity:1; }
+.scroll-cue::before{ content:""; width:2.5rem; height:1px; background:var(--accent); }
+
+/* ============ Marquee ============ */
+.marquee{ position:relative; z-index:2; overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding-block:2rem; }
+.marquee-track{ display:flex; width:max-content; flex-wrap:nowrap; animation:marquee 22s linear infinite; }
+.reduced-motion .marquee-track{ animation:none; }
+@keyframes marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+.marquee-item{ display:flex; align-items:center; font-family:var(--font-display); font-size:var(--fs-h2); text-transform:uppercase; letter-spacing:-.01em; white-space:nowrap; }
+.marquee-dot{ margin-inline:2rem; width:.625rem; height:.625rem; border-radius:9999px; background:var(--accent); flex:none; }
+
+/* ============ Seções genéricas ============ */
+section, footer.page-section{ position:relative; z-index:2; padding:var(--section) var(--gutter); }
+.section-header{ display:flex; flex-direction:column; gap:1rem; }
+@media (min-width:640px){ .section-header{ flex-direction:row; align-items:flex-end; justify-content:space-between; } }
+.section-header .idx-label{ font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.22em; color:var(--muted); }
+.section-heading{ margin-top:1.5rem; max-width:14ch; font-family:var(--font-display); text-transform:uppercase; line-height:.95; letter-spacing:-.01em; font-size:var(--fs-h2); }
+@media (min-width:640px){ .section-heading{ font-size:var(--fs-h1); } }
+
+/* ============ Story ============ */
+.story-grid{ display:grid; grid-template-columns:1fr; gap:3rem; }
+@media (min-width:1024px){ .story-grid{ grid-template-columns:repeat(12,1fr); gap:var(--gutter); } }
+.story-left{ }
+@media (min-width:1024px){ .story-left{ grid-column:span 6; } }
+.story-right{ }
+@media (min-width:1024px){ .story-right{ grid-column:span 6; padding-top:.5rem; } }
+.story-heading{ margin-top:1.5rem; max-width:16ch; font-family:var(--font-display); text-transform:uppercase; line-height:.95; letter-spacing:-.01em; font-size:var(--fs-h2); }
+@media (min-width:640px){ .story-heading{ font-size:var(--fs-h1); } }
+.story-lead{ margin-top:2rem; max-width:46ch; font-size:var(--fs-lead); line-height:var(--lh-lead); color:var(--muted); }
+
+.principles{ }
+.principle{ display:grid; grid-template-columns:auto 1fr; column-gap:1.5rem; border-top:1px solid var(--line); padding-block:2rem; }
+.principle:last-child{ border-bottom:1px solid var(--line); }
+.principle-index{ font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:600; font-variant-numeric:tabular-nums; color:var(--accent); }
+.principle-title{ font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:600; letter-spacing:-.01em; }
+.principle-text{ margin-top:.75rem; max-width:44ch; font-size:var(--fs-body); line-height:var(--lh-body); color:var(--muted); }
+
+/* ============ LiquidImage ============ */
+.liquid-image{ position:relative; overflow:hidden; background:var(--surface); }
+.liquid-image.bare{ background:none; }
+.liquid-image img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.liquid-image .placeholder-bg{ position:absolute; inset:0; background:radial-gradient(130% 130% at 30% 15%, var(--surface-2), var(--background)); }
+.liquid-image.has-photo .placeholder-label{ display:none; }
+.liquid-image:not(.bare) img{ transform:scale(1.07); transition:transform 1.1s cubic-bezier(.16,1,.3,1); }
+.liquid-image:not(.bare):hover img{ transform:scale(1.12); }
+.photo-credit{ margin-top:3rem; font-size:var(--fs-eyebrow); color:var(--muted); }
+.photo-credit a{ text-decoration:underline; text-underline-offset:2px; }
+.liquid-image .placeholder-label{ position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:1.5rem; font-family:var(--font-display); text-transform:uppercase; letter-spacing:-.01em; font-size:var(--fs-h3); color:var(--muted); }
+.liquid-image .vignette{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 120% at 50% 120%, rgba(0,0,0,.7), transparent 60%); }
+.liquid-image .glow{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .38s ease; background:linear-gradient(120deg, transparent 30%, rgba(232,2,7,.35) 50%, transparent 70%); }
+.liquid-image .veil{ position:absolute; inset:0; pointer-events:none; background:var(--surface-2); mix-blend-mode:color; opacity:.78; transition:opacity .38s ease; }
+.liquid-image.bare .vignette, .liquid-image.bare .glow, .liquid-image.bare .veil{ display:none; }
+.liquid-image:hover .glow{ opacity:1; }
+.liquid-image:hover .veil{ opacity:0; }
+@media (max-width:768px){ .liquid-image .glow, .liquid-image .veil{ display:none; } }
+
+/* ============ Ventures / Modalidades ============ */
+.ventures-list{ margin-top:4rem; display:grid; grid-template-columns:1fr; column-gap:var(--gutter); row-gap:4rem; }
+@media (min-width:768px){ .ventures-list{ grid-template-columns:repeat(2,1fr); } }
+@media (min-width:768px){ .venture-card:nth-child(2n){ margin-top:6rem; } }
+.venture-card .liquid-image{ aspect-ratio:16/11; width:100%; border-radius:.125rem; }
+.venture-row{ margin-top:1.5rem; border-top:1px solid var(--line); padding-top:1.25rem; display:flex; align-items:flex-start; justify-content:space-between; gap:1.5rem; }
+.venture-name{ font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:600; letter-spacing:-.01em; color:var(--foreground); transition:color .34s ease; }
+.venture-card:hover .venture-name{ color:var(--accent); }
+.venture-blurb{ margin-top:.5rem; max-width:42ch; font-size:var(--fs-body); color:var(--muted); }
+.venture-meta{ flex:none; text-align:right; }
+.venture-meta .term{ display:block; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.18em; color:var(--muted); white-space:nowrap; }
+.venture-meta .tag{ display:block; margin-top:.5rem; font-size:var(--fs-eyebrow); font-weight:500; text-transform:uppercase; letter-spacing:.18em; color:var(--accent); white-space:nowrap; }
+.venture-category{ margin-top:.75rem; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.22em; color:var(--muted); }
+
+/* ============ Impact / Números ============ */
+.impact-grid{ margin-top:4rem; display:grid; grid-template-columns:1fr; border-top:1px solid var(--line); }
+@media (min-width:640px){ .impact-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px){ .impact-grid{ grid-template-columns:repeat(4,1fr); } }
+.impact-cell{ display:flex; flex-direction:column; gap:1rem; border-bottom:1px solid var(--line); padding-block:2.5rem; }
+@media (min-width:1024px){ .impact-cell{ padding-block:3rem; } }
+@media (min-width:640px){ .impact-cell:nth-child(2n){ border-left:1px solid var(--line); padding-left:2rem; } }
+@media (min-width:1024px){
+  .impact-cell{ border-left:none; padding-left:0; }
+  .impact-cell:not(:nth-child(4n+1)){ border-left:1px solid var(--line); padding-left:2rem; }
+}
+.impact-cell--wide{ grid-column:1 / -1; }
+@media (min-width:640px){ .impact-cell--wide{ flex-direction:row; align-items:baseline; gap:2.5rem; } }
+.impact-cell--wide .impact-label{ max-width:34ch; }
+.impact-figure{ font-family:var(--font-display); font-size:var(--fs-display); line-height:1; letter-spacing:-.01em; color:var(--foreground); transition:color .34s ease; }
+.impact-cell:hover .impact-figure{ color:var(--accent); }
+.impact-label{ max-width:20ch; font-size:var(--fs-body); text-transform:uppercase; letter-spacing:.14em; color:var(--muted); }
+.impact-note{ margin-top:1.5rem; font-size:var(--fs-eyebrow); color:var(--muted); max-width:60ch; }
+
+/* ============ Voices / Depoimentos ============ */
+.voices-grid{ margin-top:4rem; display:grid; grid-template-columns:1fr; gap:var(--gutter); }
+@media (min-width:1024px){ .voices-grid{ grid-template-columns:repeat(12,1fr); } }
+.voices-list{ }
+@media (min-width:1024px){ .voices-list{ grid-column:span 5; } }
+.voice-btn{ width:100%; display:flex; align-items:baseline; gap:1.25rem; border-top:1px solid var(--line); padding-block:1.75rem; text-align:left; }
+.voice-item:last-child .voice-btn{ border-bottom:1px solid var(--line); }
+.voice-index{ font-size:var(--fs-eyebrow); font-variant-numeric:tabular-nums; letter-spacing:.18em; color:var(--muted); transition:color .3s ease; }
+.voice-name{ font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:600; letter-spacing:-.01em; color:var(--muted); transition:color .3s ease; }
+.voice-role{ margin-top:.25rem; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.18em; color:var(--muted); }
+.voice-rule{ margin-top:.5rem; height:1px; width:0; background:var(--accent); transition:width .3s ease; }
+.voice-item.active .voice-index{ color:var(--accent); }
+.voice-item.active .voice-name{ color:var(--foreground); }
+.voice-item.active .voice-rule{ width:2.5rem; }
+
+.voice-panel{ display:grid; grid-template-columns:1fr; gap:1.5rem; }
+@media (min-width:1024px){ .voice-panel{ grid-column:span 7; } }
+@media (min-width:640px){ .voice-panel{ grid-template-columns:1fr auto; align-items:flex-start; } }
+.voice-quote{ order:2; }
+@media (min-width:640px){ .voice-quote{ order:1; } }
+.voice-quote p{ max-width:40ch; font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:500; line-height:1.3; letter-spacing:-.01em; color:var(--foreground); }
+.voice-quote .word-mask{ display:inline-block; overflow:hidden; vertical-align:top; padding-top:.16em; margin-top:-.16em; padding-bottom:.08em; margin-bottom:-.08em; }
+.voice-quote .word{ display:inline-block; transform:translateY(18px); opacity:0; transition:transform .52s cubic-bezier(.165,.84,.44,1), opacity .52s cubic-bezier(.165,.84,.44,1); }
+.voice-quote.in-view .word{ transform:translateY(0); opacity:1; }
+.voice-footer{ margin-top:2rem; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.18em; color:var(--muted); }
+.voice-portrait{ order:1; width:100%; }
+@media (min-width:640px){ .voice-portrait{ order:2; width:16rem; } }
+.voice-avatar{
+  position:relative; width:11rem; aspect-ratio:1; margin-inline:auto; border-radius:50%;
+  display:grid; place-items:center;
+  border:1px solid var(--line-strong);
+  background:radial-gradient(120% 120% at 30% 20%, var(--surface-2), var(--background));
+  box-shadow:0 0 70px rgba(232,2,7,.1), inset 0 0 40px rgba(245,245,247,.03);
+  opacity:0; transform:scale(1.06);
+  transition:opacity .64s cubic-bezier(.16,1,.3,1), transform .64s cubic-bezier(.16,1,.3,1), border-color .4s ease, box-shadow .4s ease;
+}
+.voice-avatar.in-view{ opacity:1; transform:scale(1); }
+.voice-avatar:hover{ border-color:rgba(232,2,7,.55); box-shadow:0 0 90px rgba(232,2,7,.2), inset 0 0 40px rgba(245,245,247,.04); }
+.voice-avatar::before{ content:""; position:absolute; inset:-.9rem; border-radius:50%; border:1px dashed rgba(245,245,247,.14); animation:avatarSpin 28s linear infinite; pointer-events:none; }
+.voice-avatar .user-glyph{ width:46%; height:46%; fill:none; stroke:var(--foreground); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; opacity:.88; }
+.voice-avatar .status-dot{ position:absolute; right:8%; bottom:10%; width:.95rem; height:.95rem; border-radius:50%; background:var(--accent); box-shadow:0 0 0 .3rem var(--background), 0 0 14px rgba(232,2,7,.7); }
+.voice-avatar.swap .user-glyph{ animation:avatarSwap .6s cubic-bezier(.16,1,.3,1); }
+@keyframes avatarSpin{ to{ transform:rotate(360deg); } }
+@keyframes avatarSwap{ 0%{ transform:scale(.82); opacity:0; } 100%{ transform:scale(1); opacity:.88; } }
+@media (max-width:639px){ .voice-avatar{ width:7.5rem; margin-inline:0; } }
+@media (prefers-reduced-motion:reduce){ .voice-avatar::before{ animation:none; } }
+.reduced-motion .voice-avatar::before{ animation:none; }
+.voice-note{ margin-top:1.5rem; font-size:var(--fs-eyebrow); color:var(--muted); max-width:60ch; }
+
+/* ============ Contato / rodapé ============ */
+footer.page-section{ padding-top:var(--section); padding-bottom:0; }
+.contact-heading{ margin-top:1.5rem; max-width:18ch; font-family:var(--font-display); text-transform:uppercase; line-height:.95; letter-spacing:-.01em; font-size:var(--fs-h1); }
+@media (min-width:640px){ .contact-heading{ font-size:var(--fs-display); } }
+.contact-lead{ margin-top:2rem; max-width:44ch; font-size:var(--fs-lead); line-height:var(--lh-lead); color:var(--muted); }
+.contact-link{ margin-top:3rem; display:inline-flex; align-items:baseline; gap:.75rem; font-family:var(--font-sans); font-size:var(--fs-h3); font-weight:600; letter-spacing:-.01em; color:var(--foreground); word-break:break-word; transition:color .34s ease, transform .34s ease; }
+@media (min-width:640px){ .contact-link{ gap:1rem; font-size:var(--fs-h1); } }
+.contact-link:hover{ color:var(--accent); transform:translateX(14px); }
+.contact-link .arrow{ color:var(--accent); }
+
+.footer-bar{ margin-top:var(--section); border-top:1px solid var(--line); padding-block:3rem; display:grid; grid-template-columns:1fr; gap:2.5rem; }
+@media (min-width:1024px){ .footer-bar{ grid-template-columns:repeat(12,1fr); } }
+.footer-left{ }
+@media (min-width:1024px){ .footer-left{ grid-column:span 6; } }
+.footer-signature{ font-family:var(--font-display); font-size:var(--fs-h2); line-height:1; text-transform:uppercase; letter-spacing:-.01em; }
+.footer-tagline{ margin-top:1rem; font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.22em; color:var(--muted); }
+.footer-social{ }
+@media (min-width:1024px){ .footer-social{ grid-column:span 3; } }
+.footer-social ul{ display:flex; flex-direction:column; gap:.75rem; }
+.footer-social a{ display:inline-flex; align-items:center; font-size:var(--fs-body); color:var(--muted); transition:color .3s ease; }
+.footer-social a::before{ content:""; width:0; height:1px; background:var(--accent); transition:width .3s ease, margin-right .3s ease; }
+.footer-social a:hover{ color:var(--foreground); }
+.footer-social a:hover::before{ width:1.5rem; margin-right:.75rem; }
+.footer-copy{ }
+@media (min-width:1024px){ .footer-copy{ grid-column:span 3; text-align:right; } }
+.footer-copy p{ font-size:var(--fs-eyebrow); text-transform:uppercase; letter-spacing:.18em; color:var(--muted); }
+
+/* ============ Progresso de scroll ============ */
+.scroll-progress{ position:fixed; top:0; left:0; height:2px; width:0%; z-index:101; pointer-events:none; background:linear-gradient(90deg,var(--accent),var(--accent-2)); box-shadow:0 0 10px rgba(232,2,7,.6); }
+
+/* ============ Glow de cursor (hero) ============ */
+.cursor-glow{ position:absolute; inset:0; z-index:25; pointer-events:none; opacity:0; transition:opacity .5s ease; background:radial-gradient(360px circle at var(--gx,50%) var(--gy,50%), rgba(245,245,247,.07), transparent 62%); }
+.cursor-glow.active{ opacity:1; }
+@media (max-width:768px){ .cursor-glow{ display:none; } }
+
+/* ============ Botões magnéticos ============ */
+.magnetic{ transition:transform .25s cubic-bezier(.16,1,.3,1); will-change:transform; }
+</style>
+</head>
+<body>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ============ PRELOADER ============ -->
+<div id="preloader" aria-hidden="true">
+  <p class="pre-brand">Gabriel Martineli</p>
+  <p class="pre-count"><span id="preNum">0</span><span class="pct">%</span></p>
+</div>
+
+<!-- ============ NAV ============ -->
+<header id="site-nav">
+  <nav class="nav-inner">
+    <a href="#top" class="nav-logo">
+      <span class="mono">GM</span>
+      <span class="nm">Gabriel Martineli</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#consorcio">Consórcio</a></li>
+      <li><a href="#numeros">Números</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <a class="nav-cta magnetic" data-role="whatsapp-link" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </nav>
+</header>
+
+<div id="mobile-menu">
+  <a href="#sobre"><span class="m-inner">Sobre</span></a>
+  <a href="#consorcio"><span class="m-inner">Consórcio</span></a>
+  <a href="#numeros"><span class="m-inner">Números</span></a>
+  <a href="#depoimentos"><span class="m-inner">Depoimentos</span></a>
+  <a href="#contato"><span class="m-inner">Contato</span></a>
+</div>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section id="top">
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div class="hero-top">
+      <h2 class="hero-roles" id="heroRoles">
+        <span class="role-mask"><span class="role-inner">Consultor</span></span>
+        <span class="role-mask"><span class="role-inner">Empreendedor</span></span>
+        <span class="role-mask"><span class="role-inner">Estrategista</span></span>
+        <span class="role-mask"><span class="role-inner">Incansável</span></span>
+      </h2>
+      <p class="hero-desc reveal" id="heroDesc">Não entrego um produto pronto — construo a estratégia certa pra cada objetivo, sem juros no caminho. Planejamento, disciplina e visão de longo prazo: assim é que se conquista de verdade.</p>
+    </div>
+
+    <div class="hero-portrait-wrap">
+      <figure class="liquid-image bare" data-filter="lf-hero" data-max-scale="30">
+        <svg width="0" height="0" style="position:absolute">
+          <filter id="lf-hero"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter>
+        </svg>
+        <img src="assets/gabriel-hero-3.webp" alt="Gabriel Martineli" style="filter:url(#lf-hero)">
+      </figure>
+    </div>
+
+    <div class="hero-gradient-base"></div>
+
+    <h1 class="hero-name">
+      <span class="name-line name-line--1" id="nameLine1">Gabriel</span>
+      <span class="name-line name-line--2" id="nameLine2">Martineli</span>
+    </h1>
+
+    <p class="scroll-cue" id="scrollCue">Role para entrar</p>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <section class="marquee" aria-label="Princípios de trabalho">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </section>
+
+  <!-- ============ SOBRE ============ -->
+  <section id="sobre">
+    <div class="story-grid">
+      <div class="story-left">
+        <p class="eyebrow">A História</p>
+        <h2 class="story-heading heading-lines">
+          <span class="line-mask"><span class="line-inner" style="transition-delay:0ms">Convicção é</span></span>
+          <span class="line-mask"><span class="line-inner" style="transition-delay:90ms">vantagem competitiva.</span></span>
+        </h2>
+        <p class="story-lead reveal">Comecei a trabalhar com consórcio quando percebi um problema simples: pra comprar qualquer bem, financiamento significa pagar juros que ninguém te mostra de cara. Gostei do modelo e passei a estudar cada detalhe dele. Hoje, à frente da minha consultoria e da Empreendendo Cedo, o fio condutor nunca mudou: entender o objetivo de cada pessoa e montar a estratégia certa — usando o consórcio Embracon como uma ferramenta, não como resposta pronta pra tudo.</p>
+      </div>
+      <div class="story-right">
+        <ul class="principles" id="principlesList">
+          <li class="principle reveal" style="transition-delay:0ms">
+            <span class="principle-index">01</span>
+            <div><h3 class="principle-title">Comece antes de estar pronto</h3><p class="principle-text">A dúvida nunca vai embora sozinha. Comecei a fazer ligações com medo — e foi fazendo com medo que o medo foi embora.</p></div>
+          </li>
+          <li class="principle reveal" style="transition-delay:90ms">
+            <span class="principle-index">02</span>
+            <div><h3 class="principle-title">Estratégia, não produto</h3><p class="principle-text">Cada cliente tem um objetivo diferente. Eu analiso o cenário e desenho o caminho certo pra cada um — não empurro um pacote pronto.</p></div>
+          </li>
+          <li class="principle reveal" style="transition-delay:180ms">
+            <span class="principle-index">03</span>
+            <div><h3 class="principle-title">Não seja mais um na multidão</h3><p class="principle-text">A maioria trabalha a vida inteira pra pagar os juros de outra pessoa. Meu trabalho é tirar você dessa fila.</p></div>
+          </li>
+          <li class="principle reveal" style="transition-delay:270ms">
+            <span class="principle-index">04</span>
+            <div><h3 class="principle-title">Disciplina em vez de pressa</h3><p class="principle-text">Contemplação não é sorte, é estratégia: lance, sorteio e paciência bem calculada.</p></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONSÓRCIO ============ -->
+  <section id="consorcio">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Modalidades</p>
+        <h2 class="section-heading heading-lines">
+          <span class="line-mask"><span class="line-inner" style="transition-delay:0ms">O plano certo</span></span>
+          <span class="line-mask"><span class="line-inner" style="transition-delay:90ms">pra cada objetivo.</span></span>
+        </h2>
+      </div>
+      <p class="idx-label">04 / Modalidades</p>
+    </div>
+
+    <ul class="ventures-list">
+      <li class="venture-card reveal" style="transition-delay:0ms">
+        <figure class="liquid-image has-photo" data-filter="lf-v1" data-max-scale="28">
+          <svg width="0" height="0" style="position:absolute"><filter id="lf-v1"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter></svg>
+          <div class="placeholder-bg"></div>
+          <img src="https://images.unsplash.com/photo-1757359056339-22968344cce6?auto=format&fit=crop&w=1200&q=72" alt="Casa moderna com grandes janelas iluminadas ao entardecer" loading="lazy" style="filter:url(#lf-v1);object-position:center 55%" onerror="this.closest('figure').classList.remove('has-photo');this.remove()">
+          <p class="placeholder-label">Imóveis</p>
+          <div class="vignette"></div><div class="veil"></div><div class="glow"></div>
+        </figure>
+        <div class="venture-row">
+          <div><h3 class="venture-name">Imóveis</h3><p class="venture-blurb">Casa, apartamento, terreno ou reforma: carta de crédito de qualquer valor, uso livre.</p></div>
+          <div class="venture-meta"><span class="term">Até 200 meses</span><span class="tag">Sem entrada</span></div>
+        </div>
+        <p class="venture-category">Consórcio Imobiliário</p>
+      </li>
+
+      <li class="venture-card reveal" style="transition-delay:120ms">
+        <figure class="liquid-image has-photo" data-filter="lf-v2" data-max-scale="28">
+          <svg width="0" height="0" style="position:absolute"><filter id="lf-v2"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter></svg>
+          <div class="placeholder-bg"></div>
+          <img src="https://images.unsplash.com/photo-1747770641554-a1c16ad4821e?auto=format&fit=crop&w=1200&q=72" alt="Carro esportivo preto em estúdio escuro" loading="lazy" style="filter:url(#lf-v2);object-position:center 40%" onerror="this.closest('figure').classList.remove('has-photo');this.remove()">
+          <p class="placeholder-label">Veículos</p>
+          <div class="vignette"></div><div class="veil"></div><div class="glow"></div>
+        </figure>
+        <div class="venture-row">
+          <div><h3 class="venture-name">Veículos</h3><p class="venture-blurb">Carros e motos com parcelas que cabem no seu bolso, sem juros no caminho.</p></div>
+          <div class="venture-meta"><span class="term">Até 80 meses</span><span class="tag">0km ou seminovo</span></div>
+        </div>
+        <p class="venture-category">Consórcio de Veículos</p>
+      </li>
+
+      <li class="venture-card reveal" style="transition-delay:0ms">
+        <figure class="liquid-image has-photo" data-filter="lf-v3" data-max-scale="28">
+          <svg width="0" height="0" style="position:absolute"><filter id="lf-v3"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter></svg>
+          <div class="placeholder-bg"></div>
+          <img src="https://images.unsplash.com/photo-1592805144716-feeccccef5ac?auto=format&fit=crop&w=1200&q=72" alt="Caminhão na estrada sob o céu alaranjado do fim de tarde" loading="lazy" style="filter:url(#lf-v3);object-position:center 50%" onerror="this.closest('figure').classList.remove('has-photo');this.remove()">
+          <p class="placeholder-label">Pesados &amp; Máquinas</p>
+          <div class="vignette"></div><div class="veil"></div><div class="glow"></div>
+        </figure>
+        <div class="venture-row">
+          <div><h3 class="venture-name">Pesados &amp; Máquinas</h3><p class="venture-blurb">Caminhões, implementos e maquinário pra quem quer investir no próprio negócio.</p></div>
+          <div class="venture-meta"><span class="term">Até 150 meses</span><span class="tag">Investimento produtivo</span></div>
+        </div>
+        <p class="venture-category">Consórcio Pesados</p>
+      </li>
+
+      <li class="venture-card reveal" style="transition-delay:120ms">
+        <figure class="liquid-image has-photo" data-filter="lf-v4" data-max-scale="28">
+          <svg width="0" height="0" style="position:absolute"><filter id="lf-v4"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter></svg>
+          <div class="placeholder-bg"></div>
+          <img src="https://images.unsplash.com/photo-1698864551603-0f7aefaebeb4?auto=format&fit=crop&w=1200&q=72" alt="Interior escuro e sofisticado com iluminação quente" loading="lazy" style="filter:url(#lf-v4);object-position:center 62%" onerror="this.closest('figure').classList.remove('has-photo');this.remove()">
+          <p class="placeholder-label">Serviços</p>
+          <div class="vignette"></div><div class="veil"></div><div class="glow"></div>
+        </figure>
+        <div class="venture-row">
+          <div><h3 class="venture-name">Serviços</h3><p class="venture-blurb">Reformas, eventos, cirurgias, intercâmbio: crédito pra realizar o que você precisar.</p></div>
+          <div class="venture-meta"><span class="term">Uso flexível</span><span class="tag">Sem juros</span></div>
+        </div>
+        <p class="venture-category">Consórcio de Serviços</p>
+      </li>
+    </ul>
+    <p class="photo-credit">Fotos: Michael Brown, Leiada Krözjhen, Josiah Farrow e Anton Sobotyak via <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</p>
+  </section>
+
+  <!-- ============ NÚMEROS ============ -->
+  <section id="numeros">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Em Números</p>
+        <h2 class="section-heading heading-lines">
+          <span class="line-mask"><span class="line-inner" style="transition-delay:0ms">Resultado que</span></span>
+          <span class="line-mask"><span class="line-inner" style="transition-delay:90ms">sustenta a conversa.</span></span>
+        </h2>
+      </div>
+    </div>
+
+    <dl class="impact-grid">
+      <div class="impact-cell reveal" style="transition-delay:0ms">
+        <dd class="impact-figure">38</dd>
+        <dt class="impact-label">Anos de história da Embracon</dt>
+      </div>
+      <div class="impact-cell reveal" style="transition-delay:110ms">
+        <dd class="impact-figure">600 mil+</dd>
+        <dt class="impact-label">Bens entregues pelo grupo</dt>
+      </div>
+      <div class="impact-cell reveal" style="transition-delay:220ms">
+        <dd class="impact-figure">220 mil+</dd>
+        <dt class="impact-label">Clientes atendidos pela Embracon</dt>
+      </div>
+      <div class="impact-cell reveal" style="transition-delay:330ms">
+        <dd class="impact-figure">100%</dd>
+        <dt class="impact-label">Atendimento estratégico e personalizado</dt>
+      </div>
+      <div class="impact-cell impact-cell--wide reveal" style="transition-delay:440ms">
+        <dd class="impact-figure">10 milhões+</dd>
+        <dt class="impact-label">Comercializados no último semestre</dt>
+      </div>
+    </dl>
+    <p class="impact-note">*Números do grupo Embracon, segundo o perfil oficial <a href="https://www.instagram.com/embraconoficial/" target="_blank" rel="noopener" style="text-decoration:underline">@embraconoficial</a> e informações repassadas pelo Gabriel.</p>
+  </section>
+
+  <!-- ============ DEPOIMENTOS ============ -->
+  <section id="depoimentos">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Depoimentos</p>
+        <h2 class="section-heading heading-lines">
+          <span class="line-mask"><span class="line-inner" style="transition-delay:0ms">O que dizem</span></span>
+          <span class="line-mask"><span class="line-inner" style="transition-delay:90ms">sobre o Gabriel.</span></span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="voices-grid">
+      <ul class="voices-list" id="voicesList">
+        <li class="voice-item active" data-index="0">
+          <button class="voice-btn">
+            <span class="voice-index">01</span>
+            <span>
+              <span class="voice-name">Acompanhamento pós-contrato</span>
+              <span class="voice-role" style="display:block">Cliente da consultoria</span>
+              <span class="voice-rule"></span>
+            </span>
+          </button>
+        </li>
+        <li class="voice-item" data-index="1">
+          <button class="voice-btn">
+            <span class="voice-index">02</span>
+            <span>
+              <span class="voice-name">Ajuda com os lances</span>
+              <span class="voice-role" style="display:block">Cliente da consultoria</span>
+              <span class="voice-rule"></span>
+            </span>
+          </button>
+        </li>
+        <li class="voice-item" data-index="2">
+          <button class="voice-btn">
+            <span class="voice-index">03</span>
+            <span>
+              <span class="voice-name">Transparência</span>
+              <span class="voice-role" style="display:block">Cliente da consultoria</span>
+              <span class="voice-rule"></span>
+            </span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="voice-panel">
+        <blockquote class="voice-quote" id="voiceQuote">
+          <p id="voiceQuoteText"></p>
+          <footer class="voice-footer" id="voiceFooter">Cliente da consultoria</footer>
+        </blockquote>
+        <div class="voice-portrait">
+          <div class="voice-avatar" id="voicePortrait" role="img" aria-label="Ícone de perfil do cliente">
+            <svg class="user-glyph" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8.2" r="3.7"/>
+              <path d="M4.6 20.2c.5-3.8 3.7-6.1 7.4-6.1s6.9 2.3 7.4 6.1"/>
+            </svg>
+            <span class="status-dot" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTATO ============ -->
+  <footer id="contato" class="page-section">
+    <p class="eyebrow">Vamos Conversar</p>
+    <h2 class="contact-heading heading-lines">
+      <span class="line-mask"><span class="line-inner" style="transition-delay:0ms">Tem um objetivo</span></span>
+      <span class="line-mask"><span class="line-inner" style="transition-delay:90ms">que parece longe demais?</span></span>
+    </h2>
+    <p class="contact-lead reveal">É basicamente onde eu entro. Chama no WhatsApp e vamos desenhar juntos a estratégia certa pra você.</p>
+    <a class="contact-link magnetic" data-role="whatsapp-link" target="_blank" rel="noopener">
+      <span>Falar no WhatsApp</span><span class="arrow">↗</span>
+    </a>
+
+    <div class="footer-bar">
+      <div class="footer-left">
+        <p class="footer-signature">Gabriel Martineli</p>
+        <p class="footer-tagline">Consultor &amp; Fundador da Empreendendo Cedo · Campinas-SP</p>
+      </div>
+      <nav class="footer-social" aria-label="Redes sociais">
+        <ul>
+          <li><a href="https://www.instagram.com/martineli.oficial/" target="_blank" rel="noreferrer noopener">Instagram</a></li>
+          <li><a data-role="whatsapp-link" target="_blank" rel="noreferrer noopener">WhatsApp</a></li>
+          <li><a data-role="email-link">E-mail</a></li>
+        </ul>
+      </nav>
+      <div class="footer-copy">
+        <p id="copyYear">© 2026 Gabriel Martineli. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script type="module">
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+let Lenis;
+try {
+  ({ default: Lenis } = await import('lenis'));
+} catch (err) {
+  console.warn('Lenis não carregou (CDN indisponível?) — usando scroll nativo.', err);
+  Lenis = class {
+    raf(){}
+    stop(){}
+    start(){}
+    scrollTo(target){
+      const el = typeof target === 'string' ? document.querySelector(target) : target;
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+}
+
+/* ============ Config de contato — edite só aqui ============
+   TODO: troque pelos dados reais do Gabriel antes de publicar. */
+const CONFIG = {
+  whatsappNumber: '5519999107434',
+  whatsappMessage: 'Olá Gabriel! Vim do seu site e quero entender qual estratégia faz mais sentido pro meu objetivo.',
+  email: 'consultorgabrielmartineli@gmail.com',
+};
+(function wireContact(){
+  const waHref = 'https://wa.me/' + CONFIG.whatsappNumber + '?text=' + encodeURIComponent(CONFIG.whatsappMessage);
+  document.querySelectorAll('[data-role="whatsapp-link"]').forEach(el => el.setAttribute('href', waHref));
+  document.querySelectorAll('[data-role="email-link"]').forEach(el => { el.setAttribute('href', 'mailto:' + CONFIG.email); el.textContent = CONFIG.email; });
+})();
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduceMotion) document.documentElement.classList.add('reduced-motion');
+
+/* ============ Fundo "Poeira" ============
+   Canvas 2D puro: poeira flutuante sutil, quase monocromática (branco/cinza,
+   uma fração mínima com leve tom vermelho da marca), com deriva orgânica e
+   paralaxe discreta ao mouse. Minimalista de propósito — não deve competir
+   com o conteúdo. */
+(function dustBackground(){
+  const canvas = document.getElementById('scene');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let w, h, dpr;
+  let particles = [];
+  let raf = null;
+  let t = 0;
+  const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.width = innerWidth * dpr;
+    h = canvas.height = innerHeight * dpr;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    const count = Math.round((innerWidth * innerHeight) / 15000);
+    particles = Array.from({ length: count }, makeParticle);
+  }
+
+  function makeParticle() {
+    return {
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: (Math.random() * 1.1 + 0.3) * dpr,
+      depth: Math.random() * 0.6 + 0.4,
+      vy: (-Math.random() * 0.05 - 0.015) * dpr,
+      drift: Math.random() * Math.PI * 2,
+      driftSpeed: Math.random() * 0.4 + 0.15,
+      a: Math.random() * 0.35 + 0.06,
+      warm: Math.random() > 0.9,
+    };
+  }
+
+  function step() {
+    t += 0.008;
+    pointer.x += (pointer.tx - pointer.x) * 0.03;
+    pointer.y += (pointer.ty - pointer.y) * 0.03;
+    const parallaxX = (pointer.x - 0.5) * 24 * dpr;
+    const parallaxY = (pointer.y - 0.5) * 14 * dpr;
+
+    ctx.clearRect(0, 0, w, h);
+    for (const p of particles) {
+      p.y += p.vy;
+      const sway = Math.sin(t * p.driftSpeed + p.drift) * 0.35 * dpr;
+      const px = p.x + sway + parallaxX * p.depth;
+      const py = p.y + parallaxY * p.depth;
+
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+
+      ctx.beginPath();
+      ctx.fillStyle = p.warm ? `rgba(232,2,7,${p.a * 0.55})` : `rgba(245,245,247,${p.a})`;
+      ctx.arc(px, py, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  function start() { if (!raf) raf = requestAnimationFrame(step); }
+  function stop() { if (raf) cancelAnimationFrame(raf); raf = null; }
+
+  window.addEventListener('pointermove', (e) => {
+    pointer.tx = e.clientX / innerWidth;
+    pointer.ty = e.clientY / innerHeight;
+  }, { passive: true });
+
+  resize();
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop(); else if (!reduceMotion) start();
+  });
+
+  if (!reduceMotion) start();
+})();
+
+/* ============ Grade adaptativa acima de 1920px ============ */
+const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+function applyAdaptiveGrid(){
+  const w = window.innerWidth;
+  const reduction = ((BASE_W - w) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) document.documentElement.style.fontSize = size + "px";
+  else document.documentElement.style.removeProperty("font-size");
+}
+applyAdaptiveGrid();
+window.addEventListener("resize", applyAdaptiveGrid);
+
+/* ============ Lenis smooth scroll ============ */
+const lenis = new Lenis({ smoothWheel: true });
+window.lenis = lenis;
+function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) {
+      e.preventDefault();
+      closeMobileMenu();
+      lenis.scrollTo(target);
+    }
+  });
+});
+
+/* ============ Preloader ============ */
+(function preloader(){
+  const el = document.getElementById('preloader');
+  const numEl = document.getElementById('preNum');
+
+  if (reduceMotion) {
+    el.style.display = 'none';
+    lenis.start();
+    startHeroSequence(0);
+    return;
+  }
+
+  lenis.stop();
+  window.scrollTo(0, 0);
+
+  const dur = 2000;
+  const t0 = performance.now();
+  function step(now){
+    const p = Math.min(1, (now - t0) / dur);
+    numEl.textContent = Math.round(p * 100);
+    if (p < 1) requestAnimationFrame(step);
+    else finish();
+  }
+  requestAnimationFrame(step);
+
+  function finish(){
+    el.classList.add('fade-out');
+    setTimeout(() => {
+      el.classList.add('wipe');
+      setTimeout(() => {
+        lenis.start();
+        el.style.pointerEvents = 'none';
+        el.setAttribute('aria-hidden', 'true');
+      }, 650);
+    }, 300 + 200);
+  }
+
+  startHeroSequence(0);
+})();
+
+/* ============ Rede de segurança do preloader ============
+   Se qualquer coisa falhar na sequência acima (CDN lento, erro de JS),
+   a página nunca deve ficar presa atrás do preloader. */
+setTimeout(() => {
+  const el = document.getElementById('preloader');
+  if (el && el.style.display !== 'none' && !el.classList.contains('wipe')) {
+    el.classList.add('fade-out', 'wipe');
+    el.style.pointerEvents = 'none';
+    try { lenis.start(); } catch (e) {}
+  }
+}, 6000);
+
+/* ============ Sequência de entrada do herói ============ */
+function buildLetters(el, stagger){
+  const text = el.textContent;
+  el.innerHTML = '';
+  [...text].forEach((ch, i) => {
+    const mask = document.createElement('span');
+    mask.className = 'letter-mask';
+    const letter = document.createElement('span');
+    letter.className = 'letter';
+    letter.style.transitionDelay = (i * stagger) + 'ms';
+    letter.textContent = ch === ' ' ? ' ' : ch;
+    mask.appendChild(letter);
+    el.appendChild(mask);
+  });
+}
+
+function startHeroSequence(offset){
+  const line1 = document.getElementById('nameLine1');
+  const line2 = document.getElementById('nameLine2');
+  buildLetters(line1, 52);
+  buildLetters(line2, 52);
+
+  const roles = document.querySelectorAll('#heroRoles .role-mask');
+  const desc = document.getElementById('heroDesc');
+  const cue = document.getElementById('scrollCue');
+
+  setTimeout(() => line1.classList.add('in-view'), offset + 2500);
+  setTimeout(() => line2.classList.add('in-view'), offset + 2740);
+  roles.forEach((r, i) => setTimeout(() => r.classList.add('in-view'), offset + 2700 + i * 80));
+  setTimeout(() => desc.classList.add('in-view'), offset + 2900);
+  setTimeout(() => cue.classList.add('in-view'), offset + 3400);
+}
+
+/* ============ Marquee (duplicado p/ loop) ============ */
+(function marquee(){
+  const words = ['Conquiste Sem Juros', 'Fuja Da Corrida Dos Ratos', 'Pense Em Décadas', 'Aposte Em Você', 'Construa Seu Legado'];
+  const track = document.getElementById('marqueeTrack');
+  const html = words.map(w => `<span class="marquee-item">${w}<span class="marquee-dot"></span></span>`).join('');
+  track.innerHTML = html + html;
+})();
+
+/* ============ Reveal on scroll (IO) ============ */
+(function revealIO(){
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0 });
+  document.querySelectorAll('.reveal, .heading-lines, .impact-cell').forEach(el => io.observe(el));
+
+  if (reduceMotion) {
+    document.querySelectorAll('.reveal, .heading-lines, .impact-cell').forEach(el => el.classList.add('in-view'));
+  }
+})();
+
+/* ============ Nav mobile ============ */
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+function closeMobileMenu(){
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
+  mobileMenu.classList.remove('open');
+}
+burger.addEventListener('click', () => {
+  const open = !mobileMenu.classList.contains('open');
+  burger.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', String(open));
+  mobileMenu.classList.toggle('open', open);
+});
+
+/* ============ LiquidImage — distorção no hover (spring) ============ */
+class Spring{
+  constructor(value, tension, friction){ this.pos=value; this.vel=0; this.target=value; this.tension=tension; this.friction=friction; }
+  set(t){ this.target=t; }
+  step(dt){
+    const F = -this.tension*(this.pos-this.target) - this.friction*this.vel;
+    this.vel += F*dt;
+    this.pos += this.vel*dt;
+  }
+  get settled(){ return Math.abs(this.pos-this.target) < 0.0015 && Math.abs(this.vel) < 0.0015; }
+}
+
+function initLiquid(el){
+  const filterId = el.dataset.filter;
+  const svgFilter = document.getElementById(filterId);
+  if (!svgFilter) return;
+  const turb = svgFilter.querySelector('feTurbulence');
+  const disp = svgFilter.querySelector('feDisplacementMap');
+  const maxScale = parseFloat(el.dataset.maxScale || '28');
+  const scaleSpring = new Spring(1, 140, 13);
+  const freqSpring = new Spring(0.009, 140, 13);
+  let raf = null, last = null;
+
+  function tick(now){
+    if (last == null) last = now;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    scaleSpring.step(dt);
+    freqSpring.step(dt);
+    disp.setAttribute('scale', scaleSpring.pos.toFixed(3));
+    turb.setAttribute('baseFrequency', freqSpring.pos.toFixed(5));
+    if (!scaleSpring.settled || !freqSpring.settled) {
+      raf = requestAnimationFrame(tick);
+    } else {
+      raf = null; last = null;
+    }
+  }
+  function start(){ if (!raf) raf = requestAnimationFrame(tick); }
+
+  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    el.addEventListener('pointerenter', () => { scaleSpring.set(maxScale); freqSpring.set(0.022); start(); });
+    el.addEventListener('pointerleave', () => { scaleSpring.set(1); freqSpring.set(0.009); start(); });
+  }
+}
+document.querySelectorAll('.liquid-image[data-filter]').forEach(initLiquid);
+
+/* ============ Depoimentos interativos ============ */
+const voices = [
+  { name:'Cliente da consultoria', role:'Acompanhamento pós-contrato', quote:'Eu achava que, assim que fechasse, você ia sumir. Foi o contrário. Faz quatro meses que fechei e você continua me ajudando, me mandando as informações e me explicando tudo certinho todo mês.' },
+  { name:'Cliente da consultoria', role:'Ajuda com os lances', quote:'O que mais me surpreendeu foi o suporte depois do contrato. Todo mês você me ajuda a ofertar lance, sem eu precisar correr atrás de nada. Dá muita segurança ter alguém assim do lado.' },
+  { name:'Cliente da consultoria', role:'Transparência', quote:'Vários vendedores de consórcio ficaram me mandando mensagem, só querendo empurrar o consórcio. Você foi diferente: foi transparente, falou a real e não tentou me enrolar. Por isso eu confiei em você.' },
+];
+
+function buildWords(container, text, stagger){
+  container.innerHTML = '';
+  const words = text.split(' ');
+  words.forEach((w, i) => {
+    const mask = document.createElement('span');
+    mask.className = 'word-mask';
+    const word = document.createElement('span');
+    word.className = 'word';
+    word.style.transitionDelay = (i * stagger) + 'ms';
+    word.textContent = w + (i < words.length - 1 ? ' ' : '');
+    mask.appendChild(word);
+    container.appendChild(mask);
+  });
+}
+
+function setVoice(index){
+  const v = voices[index];
+  const quoteWrap = document.getElementById('voiceQuote');
+  const quoteText = document.getElementById('voiceQuoteText');
+  const footer = document.getElementById('voiceFooter');
+  const avatar = document.getElementById('voicePortrait');
+
+  quoteWrap.classList.remove('in-view');
+  buildWords(quoteText, '“' + v.quote + '”', 22);
+  void quoteWrap.offsetWidth;
+  requestAnimationFrame(() => quoteWrap.classList.add('in-view'));
+
+  footer.textContent = v.name + ' — ' + v.role;
+
+  avatar.classList.remove('swap');
+  void avatar.offsetWidth;
+  avatar.classList.add('swap');
+
+  document.querySelectorAll('.voice-item').forEach((li) => {
+    li.classList.toggle('active', Number(li.dataset.index) === index);
+  });
+}
+
+document.querySelectorAll('.voice-item .voice-btn').forEach((btn, i) => {
+  btn.addEventListener('click', () => setVoice(i));
+});
+
+const voicePortraitIO = new IntersectionObserver((entries, obs) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+}, { threshold: 0 });
+voicePortraitIO.observe(document.getElementById('voicePortrait'));
+
+setVoice(0);
+
+/* ============ Ano no rodapé ============ */
+document.getElementById('copyYear').textContent = '© ' + new Date().getFullYear() + ' Gabriel Martineli. Todos os direitos reservados.';
+
+/* ============ Barra de progresso de scroll ============ */
+(function scrollProgress(){
+  const bar = document.getElementById('scrollProgress');
+  if (!bar || reduceMotion) return;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = p + '%';
+  }
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+})();
+
+/* ============ Glow de cursor no hero ============ */
+(function cursorGlow(){
+  const hero = document.getElementById('top');
+  const glow = document.getElementById('cursorGlow');
+  if (!hero || !glow) return;
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  hero.addEventListener('pointermove', (e) => {
+    const r = hero.getBoundingClientRect();
+    glow.style.setProperty('--gx', ((e.clientX - r.left) / r.width) * 100 + '%');
+    glow.style.setProperty('--gy', ((e.clientY - r.top) / r.height) * 100 + '%');
+    glow.classList.add('active');
+  });
+  hero.addEventListener('pointerleave', () => glow.classList.remove('active'));
+})();
+
+/* ============ Botões magnéticos ============ */
+(function magneticButtons(){
+  if (reduceMotion || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  document.querySelectorAll('.magnetic').forEach((btn) => {
+    btn.addEventListener('pointermove', (e) => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * 0.35;
+      const y = (e.clientY - r.top - r.height / 2) * 0.35;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('pointerleave', () => { btn.style.transform = 'translate(0, 0)'; });
+  });
+})();
+
+/* ============ Números com efeito de decodificação ============ */
+(function scrambleNumbers(){
+  const CHARS = '0123456789ABCDEFXYZ%+.';
+  function scramble(el, duration){
+    if (reduceMotion) return;
+    const final = el.textContent;
+    const len = final.length;
+    const t0 = performance.now();
+    function frame(now){
+      const p = Math.min(1, (now - t0) / duration);
+      const revealed = Math.floor(p * len);
+      let out = '';
+      for (let i = 0; i < len; i++) {
+        if (final[i] === ' ') { out += ' '; continue; }
+        out += i < revealed ? final[i] : CHARS[Math.floor(Math.random() * CHARS.length)];
+      }
+      el.textContent = out;
+      if (p < 1) requestAnimationFrame(frame);
+      else el.textContent = final;
+    }
+    requestAnimationFrame(frame);
+  }
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      scramble(en.target, 900);
+      obs.unobserve(en.target);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.impact-figure').forEach((el) => io.observe(el));
+})();
+</script>
+</body>
+</html>
